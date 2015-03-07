@@ -35,10 +35,7 @@ function encrypt($M,$K) {
   $KK = $KK[0];
   $c = strlen($M);
   $result = '';
-  $B = '';
-  $H = '';
-  $B2 = '';
-  $KK2 = '';
+  $B = $H = $B2 = $KK2 = '';
   
   while ($c--) {
     $B = $B.A2B($M[$c]);
@@ -62,12 +59,7 @@ function encrypt($M,$K) {
   $C = explode("$",$C[1]);
   $S = $C[0];
   $C = $C[1];
-  $Cn = "";
-  $Cx = "";
-  $Cf = "";
-  $Sn = "";
-  $Sx = "";  
-  $Sf = "";
+  $Cn = $Sf = $Sx = $Sn = $Cf = $Cx = "";
   $c = strlen($C);
   $d = strlen($S);
   while ($c--) {
