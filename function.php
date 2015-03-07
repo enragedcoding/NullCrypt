@@ -58,6 +58,33 @@ function encrypt($M,$K) {
   $S = substr(str_replace('+','.',base64_encode(md5(mt_rand(), true))),0,16);
   $R = 10000;
   $C = crypt($H, sprintf('$6$rounds=%d$%s$', $R, $S));
+  $C = explode("\$6\$rounds={$R}\$",$C);
+  $C = explode("$",$C[1]);
+  $S = $C[0];
+  $C = $C[1];
+  $Cn = "";
+  $Cx = "";
+  $Cf = "";
+  $Sn = "";
+  $Sx = "";  
+  $Sf = "";
+  $c = strlen($C);
+  $d = strlen($S);
+  while ($c--) {
+    $Cn = $Cn.A2B($C[$c]);
+    $Cx = str_split($Cn,8);
+    foreach($Cx as $Cg) {
+      $Cf = $Cf.B2H($Cg);
+    }
+  }
+  while ($d--) {
+    $Sn = $Sn.A2B($S[$d]);
+    $Sx = str_split($Sn,8);
+    foreach ($Sx as $Sg) {
+      $Sf = $Sf.B2H($Sg);
+    }
+  }
+  $C = $Cf.":".$Sf;
   return $C;
 }
 
