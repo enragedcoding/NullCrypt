@@ -2,10 +2,11 @@
 // M -> Message
 // ASCII to Binary
 $K = "KEY";
+$M = "Test Message"
 
 function DK($M,$K) {
   while (strlen($M)<$K) {
-  $K = $K.$K;
+    $K = $K.$K;
   }
   str_split($K, strlen($M));
   return $K;
@@ -45,7 +46,13 @@ function encrypt($M) {
   foreach($Bx as $Bg) {
     $H = $H.B2H($Bg);
   }
+  $S = substr(str_replace('+','.',base64_encode(md5(mt_rand(), true))),0,16);
+  $R = 10000;
+  $C = crypt($H, sprintf('$6$rounds=%d$%s$', $R, $S));
   
-  -.-.-.-.-.-.-
   
+  
+  return $C;
 }
+
+echo encrypt($M);
