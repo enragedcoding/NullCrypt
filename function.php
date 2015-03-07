@@ -65,16 +65,16 @@ function encrypt($M,$K) {
   while ($c--) {
     $Cn = $Cn.A2B($C[$c]);
     $Cx = str_split($Cn,8);
-    foreach($Cx as $Cg) {
-      $Cf = $Cf.B2H($Cg);
-    }
+  }
+  foreach($Cx as $Cg) {
+    $Cf = $Cf.B2H($Cg);
   }
   while ($d--) {
     $Sn = $Sn.A2B($S[$d]);
     $Sx = str_split($Sn,8);
-    foreach ($Sx as $Sg) {
-      $Sf = $Sf.B2H($Sg);
-    }
+  }
+  foreach ($Sx as $Sg) {
+    $Sf = $Sf.B2H($Sg);
   }
   $C = $Cf.":".$Sf;
   return $C;
