@@ -23,7 +23,10 @@ function B2H($B) {
 
 // XOR function
 function doXOR($B,$K) {
-  return ($B xor $K);
+  if ($B xor $K)
+    return "1";
+  else 
+    return "0";
 }
 
 function encrypt($M,$K) {
