@@ -1,6 +1,6 @@
-
 require_once 'NullCrypt.php';
 $NullCrypt = new NullCrypt;
+
 
 $password = "Test Message";
 $secretKey= "gGwVt4VbEJf58gYr";
