@@ -6,4 +6,4 @@ Check usage.php to see how to use it.
 
 
 
-Created by 0x03a8, Repentance & PilferingGod
+Created by CyberGuard, Repentance & PilferingGod
