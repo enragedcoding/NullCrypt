@@ -2,7 +2,6 @@
 // M -> Message
 // K -> Key
 // R -> Rounds
-
 if ( !function_exists( 'hex2bin' ) ) {
     function hex2bin($M) {
         $B = "";
@@ -13,9 +12,7 @@ if ( !function_exists( 'hex2bin' ) ) {
         return $B;
     }
 }
-
 class NullCrypt {
-
   function H2B($input){
     if (!is_string($input)) return null;
     $value = unpack('H*', $input);
@@ -44,6 +41,12 @@ class NullCrypt {
     else 
       return "0";
   }
+  function doAND($B,$K) {
+    if ($B == $K)
+      return "1";
+    else 
+      return "0";
+  }
   
   function P_E($M,$K) {
   $KK = $this->DK($M,$K);
@@ -60,6 +63,8 @@ class NullCrypt {
   
     while ($c--) {
       $B2 = $B2.$this->doXOR($B[$c],$KK2[$c]);
+      $c--;
+      $B2 = $B2.$this->doAND($B[$c],$KK2[$c]);
     }
     $c = strlen($B2);
     $Bx = str_split($B2,8);
@@ -117,7 +122,6 @@ class NullCrypt {
     return var_export($CM === $MC, true);
   }
 }
-
 // Coded by PilferingGod, Cyberguard & Repentance
 // Use contact if you have trouble implementing anything
 // Contact: Repentance@exploit.im
