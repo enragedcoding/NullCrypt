@@ -5,6 +5,7 @@
 // R -> Rounds
 $K = "KEY";
 $M = "Test Message";
+$M1 = "Test Mssage";
 $R = 10000;
 
 
@@ -19,40 +20,34 @@ if ( !function_exists( 'hex2bin' ) ) {
         return $B;
     }
 }
-
-
-
+function H2B($input){
+  if (!is_string($input)) return null;
+  $value = unpack('H*', $input);
+  return base_convert($value[1], 16, 2);
+}
 // Duplicate Key -- Padding for XOR
 function DK($M,$K) {
-	while (strlen($M)>strlen($K)) {
-		$K .= $K;
-	}
-	$K = explode("\r\n", chunk_split($K, strlen($M), "\r\n"));
-	return $K;
+  while (strlen($M)>strlen($K)) {
+    $K .= $K;
+  }
+  $K = explode("\r\n", chunk_split($K, strlen($M), "\r\n"));
+  return $K;
 }
-
-// Ascii to Binary
 function A2B($M) {
   return str_pad(decbin(ord($M)), 8, "0", STR_PAD_LEFT);
 }
-
-// Binary to Hex
 function B2H($B) {
   return dechex(bindec($B));
 }
 
-// XOR function
 function doXOR($B,$K) {
   if ($B xor $K)
     return "1";
   else 
     return "0";
 }
-
-// Encrypt
-function encrypt($M,$K,$R) {
-  // C -> Character
-  $KK = DK($M,$K);
+function P_E($M,$K) {
+$KK = DK($M,$K);
   $KK = $KK[0];
   $c = strlen($M);
   $result = '';
@@ -63,7 +58,7 @@ function encrypt($M,$K,$R) {
     $KK2 = $KK2.A2B($KK[$c]);
   }
   $c = strlen($B);
-  
+
   while ($c--) {
     $B2 = $B2.doXOR($B[$c],$KK2[$c]);
   }
@@ -73,7 +68,14 @@ function encrypt($M,$K,$R) {
   foreach($Bx as $Bg) {
     $H = $H.B2H($Bg);
   }
-  $S = substr(str_replace('+','.',base64_encode(md5(mt_rand(), true))),0,16);
+return $H;
+}
+
+
+function encrypt($M,$K,$R) {
+  // C -> Character
+  $H = P_E($M,$K);
+  $S = substr(str_replace('+','.',base64_encode(md5(sha1(mt_rand(), true)))),0,16);
   $C = crypt($H, sprintf('$6$rounds=%d$%s$', $R, $S));
   $C = explode("\$6\$rounds={$R}\$",$C);
   $C = explode("$",$C[1]);
@@ -82,7 +84,6 @@ function encrypt($M,$K,$R) {
   $Cn = $Sf = $Sx = $Sn = $Cf = $Cx = "";
   $c = strlen($C);
   $d = strlen($S);
-  echo $C.":".$S."<br>";
   while ($c--) {
     $Cn = $Cn.A2B($C[$c]);
   }
@@ -93,42 +94,42 @@ function encrypt($M,$K,$R) {
   while ($d--) {
     $Sn = $Sn.A2B($S[$d]);
   }
-
   $Sx = str_split($Sn,8);
   foreach ($Sx as $Sg) {
     $Sf = $Sf.B2H($Sg);
   }
   $C = $Cf.":".$Sf;
+  //echo "Binary:".$Cn.":".$Sn."<br>";
   return $C;
 }
 
 function decrypt($C) {
   $H = explode(':',$C);
-  $CB = $CS = "";
-  $c = strlen($H[0]);
-  $d = strlen($H[1]);
-  while ($c--)
-    $CB = $CB.base_convert($H[0][$c], 16, 2);
-  while ($d--)
-    $CS = $CS.base_convert($H[1][$c], 16, 2);
+  $CB = $CS = $CDS = "";
+  $CB = strrev(hex2bin($H[0]));
+  $CS = strrev(hex2bin($H[1]));
   return $CB.":".$CS;
 }
-
-
-function compare($C,$M,$K) {
-  $CM = decrypt(encrypt($M,$K)); // Encrypted M
+function compare($C,$M,$K,$R) {
   $MC = decrypt($C); // Decrypted C
-
-$test_hash = crypt($test_pw, sprintf('$%s$%s$%s$', $parts[1], $parts[2], $parts[3]));
-
-// compare
-// echo $given_hash . "\n" . $test_hash . "\n" . var_export($given_hash === $test_hash, true);
-
+  $MCs = explode(':',$MC);
+  $MC = "\$6\$rounds=".$R."$".$MCs[1]."$".$MCs[0];
+  $MCp= explode('$', $MC);
+  $CM = crypt(P_E($M, $K), sprintf('$%s$%s$%s$', $MCp[1], $MCp[2], $MCp[3]));
+  return var_export($CM === $MC, true);
 }
+
+
+
+
+
 $C = encrypt($M,$K,$R);
-echo $C;
+echo "Unencrypted: ".$M."<br>";
+echo "Encrypted: ".$C;
 echo "<br>";
-echo decrypt($C);
+echo "Pass Given: ".$M1;
+echo "<br>";
+echo "Match: ".compare($C,$M1,$K,$R);
 
 
 
@@ -144,7 +145,7 @@ else
 */
 
 
-// Coded by PilferingGod & Cyberguard & Repentance
+// Coded by PilferingGod, Cyberguard & Repentance
 // Use contact if you have trouble implementing anything
 // Contact: Repentance@exploit.im
 // Contact: niels@null.net
