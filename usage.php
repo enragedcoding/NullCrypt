@@ -1,6 +1,9 @@
 require_once 'NullCrypt.php';
 $NullCrypt = new NullCrypt;
 
+// Sends email if NullCrypt.version doesn't match the Github NullCrypt.version.
+// Remove below line to not get an email.
+$NullCrypt->CheckUpdate("admin@example.com");
 
 $password = "Test Message";
 $secretKey= "gGwVt4VbEJf58gYr";
