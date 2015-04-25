@@ -1,3 +1,4 @@
+<?php
 require_once 'NullCrypt.php';
 $NullCrypt = new NullCrypt;
 
@@ -52,3 +53,4 @@ else
 // Use contact if you have trouble implementing anything
 // Contact: Repentance@exploit.im
 // Contact: niels@null.net
+?>
