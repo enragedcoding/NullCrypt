@@ -13,13 +13,13 @@ if ( !function_exists( 'hex2bin' ) ) {
     }
 }
 class NullCrypt {
-  function H2B($input){
+  private function H2B($input){
     if (!is_string($input)) return null;
     $value = unpack('H*', $input);
     return base_convert($value[1], 16, 2);
   }
   // Duplicate Key -- Padding for XOR
-  function DK($M,$K) {
+  private function DK($M,$K) {
     while (strlen($M)>strlen($K)) {
       $K .= $K;
     }
@@ -27,28 +27,28 @@ class NullCrypt {
     return $K;
   }
   
-  function A2B($M) {
+  private function A2B($M) {
     return str_pad(decbin(ord($M)), 8, "0", STR_PAD_LEFT);
   }
   
-  function B2H($B) {
+  private function B2H($B) {
     return dechex(bindec($B));
   }
   
-  function doXOR($B,$K) {
+  private function doXOR($B,$K) {
     if ($B xor $K)
       return "1";
     else 
       return "0";
   }
-  function doAND($B,$K) {
+  private function doAND($B,$K) {
     if ($B == $K)
       return "1";
     else 
       return "0";
   }
   
-  function P_E($M,$K) {
+  private function P_E($M,$K) {
   $KK = $this->DK($M,$K);
     $KK = $KK[0];
     $c = strlen($M);
