@@ -75,7 +75,7 @@ class NullCrypt {
   return $H;
   }
   
-  function Encrypt($M,$K,$R) {
+  function Hash($M,$K,$R) {
     // C -> Character
     $H = $this->P_E($M,$K);
     $S = substr(str_replace('+','.',base64_encode(md5(sha1(mt_rand(), true)))),0,16);
@@ -124,7 +124,7 @@ class NullCrypt {
     return $CB.":".$CS;
   }
   
-  function Compare($C,$M,$K,$R) {
+  function HashCompare($C,$M,$K,$R) {
     $MC = $this->Decrypt($C); // Decrypted C
     $MCs = explode(':',$MC);
     $MC = "\$6\$rounds=".$R."$".$MCs[1]."$".$MCs[0];
@@ -133,8 +133,9 @@ class NullCrypt {
     return var_export($CM === $MC, true);
   }
 }
+
 // Coded by PilferingGod, Cyberguard & Repentance
 // Use contact if you have trouble implementing anything
-// Contact: Repentance@exploit.im
-// Contact: niels@null.net
+// Contact: Repentance@exploit.im (XMPP)
+// Contact: niels@null.net (Mail)
 ?>
