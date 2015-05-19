@@ -47,7 +47,7 @@ class NullCrypt {
     else 
       return "0";
   }
-  function private C($M,$S,$V) {
+  private function C($M,$S,$V) {
     global $CC;
     for ($i=0;$i<2;$i++) {
       foreach($CC as $MT) {
@@ -56,7 +56,8 @@ class NullCrypt {
     }
     return $M;
   }
-  function private M($C,$S,$V) {
+
+  private function M($C,$S,$V) {
     global $CC;
     for($i=0;$i<2;$i++) {
       foreach(array_reverse($CC) as $MT)
@@ -145,30 +146,33 @@ class NullCrypt {
     return var_export($CM === $MC, true);
   }
   
-  function Obfuscate($C,$K,$R) {
+  function Obfuscate($C,$K="CyberGuard",$R=2) {
     $n=substr(mt_rand(),0,1);
+    $D=substr(md5(mt_rand()),0,5);
     $SX= substr(md5(rand()),0,$n);
     $V=mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC),MCRYPT_RAND);
     for($i=0;$i<=$R;$i++) {
-      $C=gzcompress(C($C,$K,$V),9);
+      $C=gzcompress($this->C($C,$K,$V),9);
     }  
-    $C=gzcompress(C($C,$SX,$V),9);
-    return utf8_encode($n.$SX.$C.$V);
+    $C=gzcompress($this->C($C,$SX,$V),9);
+    return utf8_encode($D.$R."x".$n.$SX.$C.$V);
   }
-  
-  function DeObfuscate($C,$K,$R) {
-    $XA=$C[0];
+
+  function DeObfuscate($C,$K="CyberGuard") {
+    $C=substr($C,5);
+    $R=explode('x',$C,2);$Rn=strlen($R[0]);$C=$R[1];
+    $XA=$C[0];$XA++;$R=$R[0];
     $S=substr($C,1,$C[0]);
-    $C=substr($C,++$XA);
+    $C=substr($C,$XA);
     $IV=mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-    $V=substr(utf8_decode($C),-$IV);
-    $C=substr($C,0,-$IV);
-    
-    $C=M(gzuncompress(utf8_decode($C)),$S,$V);
+    $V=substr(utf8_decode($C),-$IV);$C=substr($C,0,-$IV);
+    $C=$this->M(gzuncompress(utf8_decode($C)),$S,$V);
     for($i=0;$i<=$R;$i++) {
-      $C=M(gzuncompress($C),$K,$V);
+      $C=$this->M(gzuncompress($C),$K,$V);
     }
-    return $C;
+    if (strlen($C)<1)
+      return "Invalid Pass";
+    else return $C;
   }
 }
 
