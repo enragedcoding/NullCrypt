@@ -13,8 +13,12 @@ if ( !function_exists( 'hex2bin' ) ) {
     }
 }
 class NullCrypt {
+  $CIPHER = openssl_get_cipher_methods();
+  //print_r($CIPHER);
+  $CC= array($CIPHER[16],$CIPHER[25]); //CUSTOMIZABLE! (*CBC Ciphers only*)
+
   function CheckUpdate($ML) {
-      if (file_exists('NullCrypt.version'))
+    if (file_exists('NullCrypt.version'))
       if (file_get_contents('NullCrypt.version') != "https://raw.githubusercontent.com/NullPatrol/Secure-Password-Encryption-Function/master/NullCrypt.version") {
       //send mail:
         error_log("Newer Version of NullCrypt available at https://Github.com/NullPatrol/Secure-Password-Encryption-Function/", 1,$ML);
