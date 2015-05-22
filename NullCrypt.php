@@ -19,10 +19,10 @@ class NullCrypt {
 
   function CheckUpdate($ML) {
     if (file_exists('NullCrypt.version'))
-      if (file_get_contents('NullCrypt.version') != "https://raw.githubusercontent.com/NullPatrol/Secure-Password-Encryption-Function/master/NullCrypt.version") {
-      //send mail:
-        error_log("Newer Version of NullCrypt available at https://Github.com/NullPatrol/Secure-Password-Encryption-Function/", 1,$ML);
-        error_log("Newer Version of NullCrypt available at https://Github.com/NullPatrol/Secure-Password-Encryption-Function/", 0);
+      if (file_get_contents('NullCrypt.version') != "https://raw.githubusercontent.com/NullPatrol/NullCrypt-Password-Encryption/master/NullCrypt.version") {
+        //send mail:
+        error_log("Newer Version of NullCrypt available at https://github.com/NullPatrol/NullCrypt-Password-Encryption", 1,$ML);
+        error_log("Newer Version of NullCrypt available at https://github.com/NullPatrol/NullCrypt-Password-Encryption", 0);
       }
   }
   
