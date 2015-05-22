@@ -1,7 +1,9 @@
 <?php
-// M -> Message
-// K -> Key
-// R -> Rounds
+ini_set('memory_limit', '-1');
+ini_set('max_execution_time', 300);
+error_reporting(0);
+
+
 if ( !function_exists( 'hex2bin' ) ) {
     function hex2bin($M) {
         $B = "";
@@ -13,9 +15,19 @@ if ( !function_exists( 'hex2bin' ) ) {
     }
 }
 class NullCrypt {
+  public $CC;
+  function __construct() {
   $CIPHER = openssl_get_cipher_methods();
-  //print_r($CIPHER);
-  $CC= array($CIPHER[16],$CIPHER[25]); //CUSTOMIZABLE! (*CBC Ciphers only*)
+  $this->CC = array($CIPHER[16]); //CUSTOMIZABLE! (*CBC Ciphers only*)
+  }
+  function GetCipher($CM) {
+  $CIPHER = openssl_get_cipher_methods();
+  return $CIPHER[$CM];
+  }
+  function DisplayCipherMethods() {
+    $CIPHER = openssl_get_cipher_methods();
+    print_r($CIPHER);
+  }
 
   function CheckUpdate($ML) {
     if (file_exists('NullCrypt.version'))
@@ -52,9 +64,8 @@ class NullCrypt {
       return "0";
   }
   private function C($M,$S,$V) {
-    global $CC;
     for ($i=0;$i<2;$i++) {
-      foreach($CC as $MT) {
+      foreach($this->CC as $MT) {
       $M=openssl_encrypt($M,$MT,$S,0,$V);
       }
     }
@@ -62,9 +73,8 @@ class NullCrypt {
   }
 
   private function M($C,$S,$V) {
-    global $CC;
     for($i=0;$i<2;$i++) {
-      foreach(array_reverse($CC) as $MT)
+      foreach(array_reverse($this->CC) as $MT)
       $C=openssl_decrypt($C,$MT,$S,0,$V);
     }
     return $C;
@@ -169,7 +179,8 @@ class NullCrypt {
     $S=substr($C,1,$C[0]);
     $C=substr($C,$XA);
     $IV=mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-    $V=substr(utf8_decode($C),-$IV);$C=substr($C,0,-$IV);
+    $V=substr(utf8_decode($C),-$IV);
+    $C=substr($C,0,-$IV);
     $C=$this->M(gzuncompress(utf8_decode($C)),$S,$V);
     for($i=0;$i<=$R;$i++) {
       $C=$this->M(gzuncompress($C),$K,$V);
