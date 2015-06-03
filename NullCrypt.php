@@ -2,8 +2,6 @@
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', 300);
 error_reporting(0);
-
-
 if ( !function_exists( 'hex2bin' ) ) {
     function hex2bin($M) {
         $B = "";
@@ -16,19 +14,20 @@ if ( !function_exists( 'hex2bin' ) ) {
 }
 class NullCrypt {
   public $CC;
+  public $x; 
   function __construct() {
-  $CIPHER = openssl_get_cipher_methods();
-  $this->CC = array($CIPHER[16]); //CUSTOMIZABLE! (*CBC Ciphers only*)
+    $CIPHER = openssl_get_cipher_methods();
+    $this->CC = array($CIPHER[16]); //CUSTOMIZABLE! (*CBC Ciphers only*)
+    $this->x = 2; // Increases intensity by A LOT
   }
   function GetCipher($CM) {
-  $CIPHER = openssl_get_cipher_methods();
-  return $CIPHER[$CM];
+    $CIPHER = openssl_get_cipher_methods();
+    return $CIPHER[$CM];
   }
   function DisplayCipherMethods() {
     $CIPHER = openssl_get_cipher_methods();
     print_r($CIPHER);
   }
-
   function CheckUpdate($ML) {
     if (file_exists('NullCrypt.version'))
       if (file_get_contents('NullCrypt.version') != "https://raw.githubusercontent.com/NullPatrol/NullCrypt-Password-Encryption/master/NullCrypt.version") {
@@ -64,16 +63,15 @@ class NullCrypt {
       return "0";
   }
   private function C($M,$S,$V) {
-    for ($i=0;$i<2;$i++) {
+    for ($i=0;$i<$this->x;$i++) {
       foreach($this->CC as $MT) {
       $M=openssl_encrypt($M,$MT,$S,0,$V);
       }
     }
     return $M;
   }
-
   private function M($C,$S,$V) {
-    for($i=0;$i<2;$i++) {
+    for($i=0;$i<$this->x;$i++) {
       foreach(array_reverse($this->CC) as $MT)
       $C=openssl_decrypt($C,$MT,$S,0,$V);
     }
@@ -171,26 +169,26 @@ class NullCrypt {
     $C=gzcompress($this->C($C,$SX,$V),9);
     return utf8_encode($D.$R."x".$n.$SX.$C.$V);
   }
-
   function DeObfuscate($C,$K="CyberGuard") {
-    $C=substr($C,5);
-    $R=explode('x',$C,2);$Rn=strlen($R[0]);$C=$R[1];
-    $XA=$C[0];$XA++;$R=$R[0];
-    $S=substr($C,1,$C[0]);
-    $C=substr($C,$XA);
-    $IV=mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-    $V=substr(utf8_decode($C),-$IV);
-    $C=substr($C,0,-$IV);
-    $C=$this->M(gzuncompress(utf8_decode($C)),$S,$V);
-    for($i=0;$i<=$R;$i++) {
-      $C=$this->M(gzuncompress($C),$K,$V);
-    }
-    if (strlen($C)<1)
-      return "Invalid Pass";
-    else return $C;
+    if (strlen($C) >= 1 && strpos($C,'x') !== false) {
+      $C=substr($C,5);
+      $R=explode('x',$C,2);$Rn=strlen($R[0]);$C=$R[1];
+      $XA=$C[0];$XA++;$R=$R[0];
+      $S=substr($C,1,$C[0]);
+      $C=substr($C,$XA);
+      $IV=mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+      $V=substr(utf8_decode($C),-$IV);
+      $C=substr($C,0,-$IV);
+      $C=$this->M(gzuncompress(utf8_decode($C)),$S,$V);
+      for($i=0;$i<=$R;$i++) {
+        $C=$this->M(gzuncompress($C),$K,$V);
+      }
+      if (strlen($C)<1)
+        return "Invalid Pass";
+      else return $C;
+    } else return "Invalid Pass";
   }
 }
-
 // Coded by PilferingGod, Cyberguard & Repentance
 // Use contact if you have trouble implementing anything
 // Contact: Repentance@exploit.im (XMPP)
