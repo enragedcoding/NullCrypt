@@ -6,4 +6,4 @@ Check usage.php to see how to use it.
 
 
 
-Created by CyberGuard, Repentance & PilferingGod
+Created by CyberGuard, Repentance
