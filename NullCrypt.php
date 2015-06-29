@@ -155,7 +155,8 @@ class NullCrypt {
     $MC = "\$6\$rounds=".$R."$".$MCs[1]."$".$MCs[0];
     $MCp= explode('$', $MC);
     $CM = crypt($this->P_E($M, $K), sprintf('$%s$%s$%s$', $MCp[1], $MCp[2], $MCp[3]));
-    return var_export($CM === $MC, true);
+    $A = (var_export($CM === $MC, true)==='true');
+    return $A;
   }
   
   function Obfuscate($C,$K="CyberGuard",$R=2) {
