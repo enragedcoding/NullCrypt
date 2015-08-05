@@ -113,6 +113,7 @@ class NullCrypt {
   
   function Hash($M,$K,$R) {
     // C -> Character
+    if($R<1000)die("ERR_NULLCRYPT::MINIMUM 1000 ROUNDS");
     $H = $this->P_E($M,$K);
     $S = substr(str_replace('+','.',base64_encode(md5(sha1(mt_rand(), true)))),0,16);
     $C = crypt($H, sprintf('$6$rounds=%d$%s$', $R, $S));
