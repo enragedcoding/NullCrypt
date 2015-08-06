@@ -22,3 +22,4 @@ Created by CyberGuard, Repentance
 + **+** Obfuscation
 + **+** Deobfuscation
 + **+** BugFixes
++ **+** Customization for all functions
