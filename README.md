@@ -12,13 +12,13 @@ Created by CyberGuard, Repentance
 
 # Changelog
 / -> Change
-+ -> Addition
+\+ -> Addition
 - -> Removal
 
 
 #V2.0
 / Encrypt changed to Hash
 / Compare changed to HashCompare
-+ Obfuscation
-+ Deobfuscation
-+ BugFixes
+\+ Obfuscation
+\+ Deobfuscation
+\+ BugFixes
