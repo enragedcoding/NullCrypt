@@ -7,3 +7,18 @@ Check usage.php to see how to use it.
 
 
 Created by CyberGuard, Repentance
+
+
+
+# Changelog
+/ -> Change
++ -> Addition
+- -> Removal
+
+
+#V2.0
+/ Encrypt changed to Hash
+/ Compare changed to HashCompare
++ Obfuscation
++ Deobfuscation
++ BugFixes
