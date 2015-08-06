@@ -16,7 +16,7 @@ Created by CyberGuard, Repentance
 + - -> Removal
 
 
-##V2.0
+###V2.0
 + / Encrypt changed to Hash
 + / Compare changed to HashCompare
 + + Obfuscation
