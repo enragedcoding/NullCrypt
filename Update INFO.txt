@@ -1,5 +1,8 @@
 IMPORTANT!!
 
 Updating from 1.0 to 2.0
-
 BE AWARE THE FUNCTION NAMES HAVE BEEN CHANGED!!!
+
+
+Updating from 2.0 to 3.0
+new hashing method & comparison, existing passwords will have to be re-hashed
