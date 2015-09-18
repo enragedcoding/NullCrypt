@@ -687,5 +687,5 @@ class NullCrypt {
 // Coded by PilferingGod, Cyberguard & Repentance
 // Use contact if you have trouble implementing anything
 // Contact: Repentance@exploit.im (XMPP)
-// Contact: niels@null.net (Mail)
+// Contact: Cyberguard@hotmail.com (Mail) (PGP: http://pastebin.com/raw.php?i=49z0KAyx)
 ?>
