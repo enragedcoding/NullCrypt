@@ -73,9 +73,10 @@ $time_end = microtime(true);
 $time_obf = round(($time_end - $time_start)*1000,2);
 $secretkey2  = "mJtNb7XaC36KlCDa";
 if (strlen($obfuscated) < 100000) 
-$obfuscated_x = $obfuscated;
+  $obfuscated_x = $obfuscated;
 else
-$obfuscated_x = "Obfuscated string not printed because it's over 100,000 characters. This is to prevent excessive loading time";
+  $obfuscated_x = "Obfuscated string not printed because it's over 100,000 characters. This is to prevent excessive loading time";
+
 echo "Obfuscated: <textarea rows=5 cols=200>{$obfuscated_x}</textarea><br><br>";
 echo "Length: ".number_format(strlen($obfuscated))."<br>";
 echo "Length: ".number_format(strlen(base64_encode($obfuscated)))." (base64)<br>";
@@ -85,6 +86,7 @@ echo "Key2: ".$secretkey2."<br><br>";
 echo "Time: ".$time_obf."ms<br><br>";
 echo "Match1: ".$NullCrypt->DeObfuscate($obfuscated,$secretkey)."<br>";
 echo "Match2: ".$NullCrypt->DeObfuscate($obfuscated,$secretkey2)."<br>";
+
 /*
 // TABLE OF STRINGLENGTHS & Times!!!
 // Give this a loading time of 15-30 seconds
