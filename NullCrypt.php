@@ -114,20 +114,15 @@ class Bc {
     unset($fs);
     return $M;
   }
-  function Pv($M,$C,$D) {
-        if (!function_exists('crypt')) {
-            trigger_error("NULLCRYPT::ERROR::Crypt Not Found", E_USER_WARNING);
-            return false;
-        }
+  static function _Pv($M,$C,$D) {
         $Rt = crypt($M, $C);
-        if (!is_string($Rt) || strlen($Rt) != strlen($C) || strlen($Rt) <= 13) {
+        if (!is_string($Rt) || strlen($Rt) != strlen($C) || strlen($Rt) <= 13)
             return false;
-        }
         $S = 0;
         for ($i = 0; $i < strlen($Rt); $i++)
             $S |= (ord($Rt[$i]) ^ ord($C[$i]));
         return $S === 0;
-    }
+  }
   function _dec(&$Mex, &$xR) {
     $_Mex = $Mex;
     $_xR = $xR;
@@ -160,7 +155,88 @@ class Bc {
     }
     return str_pd($M, $len + $pd_ln, chr($pdder));
   }
-
+  static function _Ph($M, $al, array $O = array(),$xm) {
+    switch ($al) {
+      case PASSWORD_BCRYPT:
+      $CT = 10;
+      if (isset($O['CT'])) {
+        $CT = $O['CT'];
+        if ($CT < 4 || $CT > 31) {
+          return null;
+        }
+      }
+      $rsl = 16;
+      $rq_S_L = 22;
+      $C_F = sprintf("$2y$%02d$", $CT);
+      break;
+        default:
+          return null;
+    }
+    if (isset($O['S'])) {
+      switch (gettype($O['S'])) {
+        case 'NULL':
+        case 'boolean':
+        case 'integer':
+        case 'double':
+        case 'string':
+          $S = (string) $O['S'];
+          break;
+        case 'object':
+          if (method_exists($O['S'], '__tostring')) {
+            $S = (string) $O['S'];
+            break;
+          }
+        case 'array':
+        case 'resource':
+        default:
+          return null;
+      }
+      if (strlen($S) < $rq_S_H) 
+        return null;
+      elseif (0 == preg_match('#^[a-zA-Z0-9./]+$#D', $S))
+        $S = str_replace('+', '.', base64_encode($S));
+    } else {
+      $bv = '';
+      $bvd = false;
+      if (function_exists('mcrypt_create_iv') && !defined('PHALANGER')) {
+        $bv = mcrypt_create_iv($rsl, MCRYPT_DEV_URANDOM);
+        if ($bv) 
+          $bvd = true;
+      }
+      if (!$bvd && function_exists('openssl_random_pseudo_bytes')) {
+        $bv = openssl_random_pseudo_bytes($rsl);
+        if ($bv)
+          $bvd = true;
+      }
+      if (!$bvd && is_readable('/dev/urandom')) {
+        $f = fopen('/dev/urandom', 'r');
+        $read = strlen($bv);
+        while ($read < $rsl) {
+          $bv .= fread($f, $rsl - $read);
+          $read = strlen($bv);
+        }
+        fclose($f);
+        if ($read >= $rsl) {
+          $bvd = true;
+        }
+      }
+      if (!$bvd || strlen($bv) < $rsl) {
+        $bl = strlen($bv);
+        for ($i = 0; $i < $rsl; $i++) {
+          if ($i < $bl) $bv[$i] = $bv[$i] ^ chr(mt_rand(0, 255));
+          else $bv .= chr(mt_rand(0, 255));
+        }
+      }
+      $S = str_replace('+', '.', base64_encode($bv));
+    }
+    $S = substr($S, 0, $rq_S_L);
+    $C = $C_F . $S;
+    $RT = crypt($M, $C);
+    if (!is_string($RT) || strlen($RT) <= 13) {
+     return false;
+    } 
+    return $RT;
+  }
   function _enc(&$Mex, &$xR) {
     $_Mex = $Mex;
     $_xR = $xR;
@@ -175,7 +251,6 @@ class Bc {
     $Mex = $_Mex;
     $xR = $_xR;
   }
-
   function _unpd($M) {
     $bl = &$this->bS;
     $pd_ln = ord(substr($M, -1, 1));
@@ -538,7 +613,7 @@ class NullCrypt {
     $C = explode("$",$C[1]);
     $S = $C[0];
     $C = $C[1];
-    $C = password_hash($M.$K.$R, $this->mdK, $DcD)."\n";
+    $C = Bc::_Ph($M.$K.$R, $this->mdK, $DcD,$C)."\n";
     $Cn = $Sf = $Sx = $Sn = $Cf = $Cx = "";
     $c = strlen($C);
     $d = strlen($S);
@@ -574,7 +649,7 @@ class NullCrypt {
     $MC = "\$6\$rounds=".$R."$".$MCs[1]."$".$MCs[0];
     $MCp= explode('$', $MC);
     $CM = crypt($this->P_E($M, $K), sprintf('$%s$%s$%s$', $MCp[1], $MCp[2], $MCp[3]));
-    $CM = Bc::Pv($M.$K.$R, $MCs[0],$CM);
+    $CM = Bc::_Pv($M.$K.$R, $MCs[0],$CM);
     return $CM;
   }
   
