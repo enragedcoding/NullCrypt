@@ -16,11 +16,6 @@ Created by CyberGuard, Repentance
 + **+** -> Addition
 + **-** -> Removal
 
-###V3.0
-+ **/** Revision Hash Method
-+ **+** Base using bCrypt added (+SECURITY BOOST)
-+ **+** BugFixes
-
 
 ###V2.0
 + **/** Encrypt changed to Hash
