@@ -1,5 +1,5 @@
 # NullCrypt - Secure Password Class &  More
-Secure password encryption for PHP using SHA-512. Salts, Ceasar Cypher and XOR
+Secure password encryption for PHP using SHA-512, bcrypt, Salts, Ceasar Cypher, blowfish, magic and XOR
 Includes Comparison!
 
 Check usage.php to see how to use it.
