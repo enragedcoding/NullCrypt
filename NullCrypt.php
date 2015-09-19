@@ -158,7 +158,10 @@ class Bc {
   static function _Ph($M, $al, array $O = array(),$xm) {
     switch ($al) {
       case PASSWORD_BCRYPT:
-      $CT = 10;
+      $CT = 11;
+      if(isset($O['cost']))
+      $CT = $O['cost'];
+      
       if (isset($O['CT'])) {
         $CT = $O['CT'];
         if ($CT < 4 || $CT > 31) {
@@ -604,10 +607,14 @@ class NullCrypt {
   
   function Hash($M,$K,$R) {
     // C -> Character
-    if($R<1000)die("ERR_NULLCRYPT::MINIMUM 1000 ROUNDS");
+    if($R<1000) die("ERR_NULLCRYPT::MINIMUM 1000 ROUNDS");
+    $CsS=9;
     $H = $this->P_E($M,$K);
     $S = substr(str_replace('+','.',base64_encode(md5(sha1(mt_rand(), true)))),0,16);
-    $DcD = array('cost' => 14);
+    $Rr=$R;
+    for($i=0;$Rr>=0;$Rr-=500)
+      $CsS++;
+    $DcD = array('cost' => $CsS);
     $C = crypt($H, sprintf('$6$rounds=%d$%s$', $R, $S));
     $C = explode("\$6\$rounds={$R}\$",$C);
     $C = explode("$",$C[1]);
@@ -679,9 +686,9 @@ class NullCrypt {
         $C=$this->M(gzuncompress($C),$K,$V);
       }
       if (strlen($C)<1)
-        return "Invalid Pass";
+        return "NULLCRYPT::ERROR::INVALID_KEY";
       else return $C;
-    } else return "Invalid Pass";
+    } else return "NULLCRYPT::ERROR::INVALID_KEY";
   }
 }
 // Coded by PilferingGod, Cyberguard & Repentance
